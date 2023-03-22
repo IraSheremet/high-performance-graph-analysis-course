@@ -1,7 +1,7 @@
 import pytest
 
-from pygraphblas import Matrix
 from project.bfs import *
+from tests.utils import load_json
 
 
 @pytest.mark.parametrize(
@@ -30,3 +30,19 @@ from project.bfs import *
 def test_bfs(I, J, start_vertex, expected):
     matrix = Matrix.from_lists(I, J)
     assert bfs(matrix, start_vertex) == expected
+
+
+msbfs_filename = "tests/src/test_bfs.json"
+
+
+def get_test_data():
+    return [
+        (test["I"], test["J"], test["starts"], [tuple(k) for k in test["expected"]])
+        for test in load_json(msbfs_filename, "msbfs")
+    ]
+
+
+@pytest.mark.parametrize("I, J, starts, expected", get_test_data())
+def test_msbfs(I, J, starts, expected):
+    matrix = Matrix.from_lists(I, J)
+    assert msbfs(matrix, starts) == expected
